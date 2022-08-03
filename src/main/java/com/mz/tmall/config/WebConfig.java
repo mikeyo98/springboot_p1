@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 
 @Configuration
-@EnableWebMvc // not included in the project
+//@EnableWebMvc // not included in the project and will block access to static resources under webapp
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry){
