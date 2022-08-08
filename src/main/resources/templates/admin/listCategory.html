@@ -7,7 +7,8 @@
     $(function(){
         var data4Vue = {
             uri:'categories',
-            beans: []
+            beans: [],
+            pagination: {}
         };
 
         // ViewModel
@@ -15,15 +16,23 @@
             el: '#workingArea',
             data: data4Vue,
             mounted:function(){
-                this.list();
+                this.list(0);
             },
             methods: {
-                list: function(){
-                    var url = this.uri;
+                list: function(start){
+                    var url = this.uri + "?start=" + start;
                     axios.get(url).then(function(response){
-                        vue.beans = response.data;
+                        vue.pagination = response.data;
+                        vue.beans = response.data.content;
                     });
-                }
+
+                },
+                jump: function(page){
+                    jump(page, vue);
+                },
+                jumpByNumber: function(start){
+                    jumpByNumber(start, vue);
+                },
             }
 
         });
@@ -51,15 +60,16 @@
                     <td>{{bean.id}}</td>
                     <td><img height="40px" :src="'img/category/' + bean.id + '.jpg'"></td>
                     <td>{{bean.name}}</td>
-                    <td><a :href="'admin_property_list?cid' + bean.id "><span class="glyphicon glyphicon-th-list"></span> </a></td>
-                    <td><a :href="'admin_product_list?cid' + bean.id "><span class="glyphicon glyphicon-shopping-cart"></span></a></td>
-                    <td><a :href="'admin_category_edit?cid' + bean.id"><span class="glyphicon glyphicon-edit"></span></a></td>
+                    <td><a :href="'admin_property_list?cid=' + bean.id "><span class="glyphicon glyphicon-th-list"></span> </a></td>
+                    <td><a :href="'admin_product_list?cid=' + bean.id "><span class="glyphicon glyphicon-shopping-cart"></span></a></td>
+                    <td><a :href="'admin_category_edit?cid=' + bean.id"><span class="glyphicon glyphicon-edit"></span></a></td>
                     <td><a href="#nowhere" @click="deleteBean(bean.id)"><span class="glyphicon glyphicon-trash"></span></a></td>
 
                 </tr>
             </tbody>
         </table>
     </div>
+    <div th:replace="include/admin/adminPage::html"></div>
 </div>
 <div th:replace="include/admin/adminFooter::html"></div>
 </body>
