@@ -6,19 +6,19 @@ import java.util.List;
 
 public class Page4Navigator<T> {
     Page<T> pageFromJPA;
-    int navigatePages;
-    int totalPages;
-    int number;
-    long totalElements;
-    int size;
-    int numberOfElements;
-    List<T> content;
+    int navigatePages; // # of pages navigatable
+    int totalPages; // total # of pages
+    int number; // current page number
+    long totalElements; // total # of elements
+    int size; // # of elements on one page
+    int numberOfElements; // # of elements on the current page
+    List<T> content; // list of the elements
     boolean hasContent;
     boolean first;
     boolean last;
     boolean hasNext;
     boolean hasPrevious;
-    int[] navigatePageNums;
+    int[] navigatePageNums; // page nums to navigate from; TODO: compare with deque
 
     public int getNavigatePages() {
         return navigatePages;
