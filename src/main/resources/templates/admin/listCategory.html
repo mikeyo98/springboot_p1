@@ -8,7 +8,9 @@
         var data4Vue = {
             uri:'categories',
             beans: [],
-            pagination: {}
+            pagination: {},
+            bean: {id:0, name:''},
+            file: null
         };
 
         // ViewModel
@@ -21,7 +23,8 @@
             methods: {
                 list: function(start){
                     var url = this.uri + "?start=" + start;
-                    axios.get(url).then(function(response){
+                    // at controller: PostMapping("/categories")
+                    axios.get(url).then(function(response){ // Page4Navigator<Category> response
                         vue.pagination = response.data;
                         vue.beans = response.data.content;
                     });
@@ -33,7 +36,27 @@
                 jumpByNumber: function(start){
                     jumpByNumber(start, vue);
                 },
-            }
+                getFile: function (event){
+                    this.file = event.target.files[0];
+                },
+                add: function(){
+                    if(!checkEmpty(this.bean.name, "Category Name ")) return;
+                    if(!checkEmpty(this.file, "Category image")) return;
+                    var url = this.uri;
+                    // upload file using axios.js
+                    var formData = new FormData();
+                    formData.append("image", this.file);
+                    formData.append("name", this.bean.name);
+                    axios.post(url, formData).then(function(response){
+                        vue.list(0);
+                        vue.bean = {id: 0, name:''};
+                        $("#categoryPic").val('');
+                        vue.file = null;
+                        console.log("posted");
+                    });
+                },
+            },
+
 
         });
     });
@@ -70,6 +93,30 @@
         </table>
     </div>
     <div th:replace="include/admin/adminPage::html"></div>
+
+    <div class="panel panel-warning addDiv">
+        <div class="panel-heading">NEW CATEGORY</div>
+        <div class="panel-body">
+            <table class="addTable">
+                <tr>
+                    <td>Category Name</td>
+                    <td><input @keyup.enter="add" v-model.trim="bean.name" type="text" class="form-control"></td>
+                </tr>
+                <tr>
+                    <td>Category Image</td>
+                    <td>
+                        <input id="categoryPic" accept="image/*" type="file" name="image" @change="getFile($event)"/>
+                    </td>
+                </tr>
+                <tr class="submitTR">
+                    <td colspan="2" align="center">
+                        <a href="#nowhere" @click="add" class="btn btn-success">UPLOAD</a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
 </div>
 <div th:replace="include/admin/adminFooter::html"></div>
 </body>
