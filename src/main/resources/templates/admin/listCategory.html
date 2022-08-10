@@ -52,7 +52,20 @@
                         vue.bean = {id: 0, name:''};
                         $("#categoryPic").val('');
                         vue.file = null;
-                        console.log("posted");
+
+                    });
+                },
+                deleteBean: function(id){
+                    if(!checkDeleteLink()) return;
+                    var url = this.uri + "/" + id;
+
+                    axios.delete(url).then(function(response){
+                        if(response.data.length != 0){
+                            alert(response.data);
+                        } else {
+                            vue.list(0);
+                        }
+
                     });
                 },
             },
