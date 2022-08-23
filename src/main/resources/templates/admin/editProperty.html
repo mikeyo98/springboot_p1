@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="include/admin/adminHeader::html('Edit Property')">
+</head>
+<body>
+<div th:replace="include/admin/adminNavigator::html"></div>
+<script>
+    $(function(){
+        var data4Vue = {
+            listUrl : 'admin_property_list',
+            uri: 'properties',
+            bean:  {id:0,name:'',category:{id:0}},
+            category: '',
+        }
+        var vue = new Vue({
+            el: '#workingArea',
+            data: data4Vue,
+            mounted: function(){
+                this.get();
+            },
+            methods: {
+                get: function(){
+                    var id = getUrlParms("id");
+                    var url = this.uri + "/" + id;
+                    axios.get(url).then(function(response){
+                        vue.bean = response.data;
+                        vue.category = vue.bean.category;
+                    })
+                },
+                edit: function(){
+                    if(!checkEmpty(this.bean.name, "Property Name ")) return;
+                    var url = this.uri;
+                    axios.put(url, this.bean).then(function(response){
+                        location.href = vue.listUrl + "?cid=" + vue.category.id;
+                    });
+                }
+            }
+        })
+    })
+</script>
+<div id="workingArea">
+    <ol class="breadcrumb">
+        <li><a href="admin_category_list">Category</a></li>
+        <li><a :href="'admin_property_list?cid=' + category.id">{{category.name}}</a> </li>
+        <li class="active">Property</li>
+    </ol>
+    <div class="panel panel-warning editDiv">
+        <div class="panel-heading">Edit Property</div>
+        <div class="panel-body">
+            <table class="editTable">
+                <tr>
+                    <td>Property Name: </td>
+                    <td>
+                        <input type="text" @keyup.enter="edit" class="form-control" v-model.trim="bean.name">
+                    </td>
+                </tr>
+                <tr class="submitTR">
+                    <input type="hidden" name="id" v-model.trim="bean.id">
+                    <td colspan="2" align="center"><a class="btn btn-success" href="#nowhere" @click="edit">DONE</a></td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
